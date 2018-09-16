@@ -1,0 +1,21 @@
+Sub AllTblsToText()
+'все таблицы превращает в текст
+Dim tbl As Table
+For Each tbl In ActiveDocument.Tables
+   tbl.ConvertToText (wdSeparateByParagraphs)
+Next tbl
+End Sub
+
+
+Sub DeleteText()
+' Удаляет весь текст кроме таблиц
+Dim p As Paragraph, r As Range
+For Each p In ActiveDocument.Paragraphs
+  Set r = p.Range
+  If Not r.Information(wdWithInTable) Then
+    If r.InlineShapes.Count = 0 Then
+      r.Delete
+    End If
+  End If
+Next
+End Sub
