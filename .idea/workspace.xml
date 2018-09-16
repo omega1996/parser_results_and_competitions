@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6ea4d172-e180-48ad-a24d-90f4ee9bf790" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/Yargy/input_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Yargy/input_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/useful_things/Links.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,18 +14,19 @@
     <session id="566287852">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.12" value="1" />
           <entry key="project.opened" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1300" />
+          <entry key="py" value="1314" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1300" />
+          <entry key="Python" value="1314" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -46,12 +46,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Yargy/input_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="20" column="26" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
+            <state relative-caret-position="412">
+              <caret line="41" column="7" lean-forward="true" selection-start-line="41" selection-start-column="7" selection-end-line="41" selection-end-column="7" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
-                <marker date="1537130113620" expanded="true" signature="268:272" ph="..." />
-                <marker date="1537130113620" expanded="true" signature="802:807" ph="..." />
+                <marker date="1537130359590" expanded="true" signature="268:272" ph="..." />
+                <marker date="1537130359590" expanded="true" signature="782:787" ph="..." />
               </folding>
             </state>
           </provider>
@@ -247,14 +247,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="848" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15003304" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49966952" visible="true" weight="0.32867134" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49966952" weight="0.32867134" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3990461" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -302,12 +301,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Yargy/input_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="20" column="26" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
+        <state relative-caret-position="412">
+          <caret line="41" column="7" lean-forward="true" selection-start-line="41" selection-start-column="7" selection-end-line="41" selection-end-column="7" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
-            <marker date="1537130113620" expanded="true" signature="268:272" ph="..." />
-            <marker date="1537130113620" expanded="true" signature="802:807" ph="..." />
+            <marker date="1537130359590" expanded="true" signature="268:272" ph="..." />
+            <marker date="1537130359590" expanded="true" signature="782:787" ph="..." />
           </folding>
         </state>
       </provider>

@@ -19,7 +19,7 @@ def startmacros():
         word = win32com.client.Dispatch("Word.Application")
         word.Visible = True
         print(os.getcwd())
-        word.Documents.Open(os.getcwd()+"\\"+(filename+".doc")) #It should open, but it doesnt
+        word.Documents.Open(os.getcwd()+"\\"+(filename+".doc")) #it  works
         print("found \\")
 
         word.Application.Run("DeleteText")
