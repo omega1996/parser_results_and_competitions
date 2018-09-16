@@ -1,14 +1,14 @@
-Sub AllTblsToText()
-'все таблицы превращает в текст
+Sub Tables()
+'This Macros convert whole tables into text devided by ^p
 Dim tbl As Table
 For Each tbl In ActiveDocument.Tables
    tbl.ConvertToText (wdSeparateByParagraphs)
 Next tbl
+
 End Sub
 
-
 Sub DeleteText()
-' Удаляет весь текст кроме таблиц
+' This Macros delete all the text except tables
 Dim p As Paragraph, r As Range
 For Each p In ActiveDocument.Paragraphs
   Set r = p.Range
@@ -18,4 +18,40 @@ For Each p In ActiveDocument.Paragraphs
     End If
   End If
 Next
+End Sub
+Sub SaveAsTXT()
+'
+' This Macros saves document as new txt file
+' Macros created by 28.04.2006 Sergey Plotnikov
+'
+
+If ActiveDocument.Tables.Count > 0 Then
+  For i = 1 To ActiveDocument.Tables.Count
+    ActiveDocument.Tables(1).ConvertToText (wdSeparateByTabs)
+  Next i
+End If
+ActiveDocument.SaveAs FileName:=ActiveDocument.Path + _
+  Application.PathSeparator + _
+  Left(ActiveDocument.Name, Len(ActiveDocument.Name) - 4) + _
+  ".txt", FileFormat:=wdFormatText, _
+  LockComments:=False, Password:="", _
+  AddToRecentFiles:=False, _
+  WritePassword:="", ReadOnlyRecommended:=False, _
+  EmbedTrueTypeFonts:=False, _
+  SaveNativePictureFormat:=False, SaveFormsData:=False, _
+  SaveAsAOCELetter:=False, Encoding:=1251, _
+  InsertLineBreaks:=False, AllowSubstitutions:=True, _
+  LineEnding:=wdCRLF
+End Sub
+
+
+
+Sub Macros2()
+'
+' Activate macroses
+'
+'
+    Application.Run MacroName:="DeleteText"
+    Application.Run MacroName:="Tables"
+    Application.Run MacroName:="SaveAsTXT"
 End Sub
