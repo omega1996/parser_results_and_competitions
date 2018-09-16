@@ -18,10 +18,15 @@ def startmacros():
     if os.path.exists(filename+".doc"):
         word = win32com.client.Dispatch("Word.Application")
         word.Visible = True
-        word.Documents.Open(filename+".doc") #It should open, but it doesn't
-        print("found")
+        print(os.getcwd())
+        word.Documents.Open(os.getcwd()+"\\"+(filename+".doc")) #It should open, but it doesnt
+        print("found \\")
 
-        word.Application.Run ("Macros2")
+        word.Application.Run("DeleteText")
+        print("one")
+        word.Application.Run("Tables")
+        print("two")
+        word.Application.Run("SaveAsTXT")
         print("I saved")
         word.Application.Quit()
     else:
