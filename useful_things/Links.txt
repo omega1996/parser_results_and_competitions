@@ -1,0 +1,2 @@
+http://new.galalaly.me/2011/09/use-python-to-parse-microsoft-word-documents-using-pywin32-library/
+
