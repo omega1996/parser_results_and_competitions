@@ -35,12 +35,14 @@ class Inputdoc:
     def opentxtfile(self):
         '''
         This function opens file "name".txt for yargy parser
+        return readed file
         :return:
         '''
         myfile = open(self.filename+".txt","r")
         print("closed? "+str(myfile.closed))
         print("mode "+str(myfile.mode))
         print("name "+str(myfile.name))
+        return myfile.read()
         '''print(myfile.read())  #it works'''
 
 
