@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ea4d172-e180-48ad-a24d-90f4ee9bf790" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/Yargy/test_input_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Yargy/9_ФОС_Операционные системы.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Yargy/9_ФОС_Операционные системы.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Yargy/input_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Yargy/input_test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,49 +16,70 @@
     <session id="566287852">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="2" />
           <entry key="project.open.time.12" value="1" />
-          <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.9" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1994" />
+          <entry key="py" value="2205" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1994" />
+          <entry key="Python" value="2205" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="2" />
+          <entry key="py" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="2" />
+          <entry key="Python" value="4" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Yargy/input_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-146">
-              <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
+            <state>
+              <caret line="28" column="17" selection-start-line="28" selection-start-column="17" selection-end-line="28" selection-end-column="17" />
               <folding>
-                <element signature="e#1#10#0" expanded="true" />
-                <marker date="1537168340381" expanded="true" signature="51:52" ph="..." />
-                <marker date="1537168340381" expanded="true" signature="257:266" ph="..." />
-                <marker date="1537168340381" expanded="true" signature="422:430" ph="..." />
-                <marker date="1537168340381" expanded="true" signature="1129:1131" ph="..." />
-                <marker date="1537168340381" expanded="true" signature="1157:1166" ph="..." />
+                <element signature="e#0#9#0" expanded="true" />
+                <marker date="1537186700686" expanded="true" signature="51:52" ph="..." />
+                <marker date="1537186700686" expanded="true" signature="257:266" ph="..." />
+                <marker date="1537186700686" expanded="true" signature="422:430" ph="..." />
+                <marker date="1537186700686" expanded="true" signature="1129:1131" ph="..." />
+                <marker date="1537186700686" expanded="true" signature="1157:1166" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Yargy/test_input_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" selection-start-line="7" selection-end-line="7" />
+              <folding>
+                <marker date="1537186878499" expanded="true" signature="135:140" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Yargy/yargyparser.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" selection-start-line="3" selection-end-line="3" />
             </state>
           </provider>
         </entry>
@@ -83,14 +104,16 @@
         <option value="$PROJECT_DIR$/parser/list_header.py" />
         <option value="$PROJECT_DIR$/parser/from_text.py" />
         <option value="$PROJECT_DIR$/parser/from_table.py" />
+        <option value="$PROJECT_DIR$/Yargy/yargyparser.py" />
         <option value="$PROJECT_DIR$/Yargy/input_test.py" />
+        <option value="$PROJECT_DIR$/Yargy/test_input_test.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="476" />
-    <option name="y" value="92" />
-    <option name="width" value="1349" />
+    <option name="x" value="475" />
+    <option name="y" value="91" />
+    <option name="width" value="1350" />
     <option name="height" value="690" />
   </component>
   <component name="ProjectView">
@@ -138,7 +161,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.input_test">
+  <component name="RunManager" selected="Python.yargyparser">
     <configuration name="from_text" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="parser_results_and_competitions" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -181,19 +204,19 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="list_header" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="test_input_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="parser_results_and_competitions" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\Катя\venv\Scripts\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/parser" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Yargy" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/parser/list_header.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Yargy/test_input_test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -223,18 +246,41 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="yargyparser" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="parser_results_and_competitions" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Yargy" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Yargy/yargyparser.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.word_dock" />
       <item itemvalue="Python.from_text" />
-      <item itemvalue="Python.list_header" />
       <item itemvalue="Python.input_test" />
+      <item itemvalue="Python.test_input_test" />
+      <item itemvalue="Python.yargyparser" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.yargyparser" />
+        <item itemvalue="Python.test_input_test" />
         <item itemvalue="Python.input_test" />
         <item itemvalue="Python.word_dock" />
         <item itemvalue="Python.from_text" />
-        <item itemvalue="Python.list_header" />
       </list>
     </recent_temporary>
   </component>
@@ -302,16 +348,33 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Yargy/input_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-146">
-          <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
+        <state>
+          <caret line="28" column="17" selection-start-line="28" selection-start-column="17" selection-end-line="28" selection-end-column="17" />
           <folding>
-            <element signature="e#1#10#0" expanded="true" />
-            <marker date="1537168340381" expanded="true" signature="51:52" ph="..." />
-            <marker date="1537168340381" expanded="true" signature="257:266" ph="..." />
-            <marker date="1537168340381" expanded="true" signature="422:430" ph="..." />
-            <marker date="1537168340381" expanded="true" signature="1129:1131" ph="..." />
-            <marker date="1537168340381" expanded="true" signature="1157:1166" ph="..." />
+            <element signature="e#0#9#0" expanded="true" />
+            <marker date="1537186700686" expanded="true" signature="51:52" ph="..." />
+            <marker date="1537186700686" expanded="true" signature="257:266" ph="..." />
+            <marker date="1537186700686" expanded="true" signature="422:430" ph="..." />
+            <marker date="1537186700686" expanded="true" signature="1129:1131" ph="..." />
+            <marker date="1537186700686" expanded="true" signature="1157:1166" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Yargy/test_input_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <marker date="1537186878499" expanded="true" signature="135:140" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Yargy/yargyparser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
