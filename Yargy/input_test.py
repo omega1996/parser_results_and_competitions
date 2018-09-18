@@ -45,7 +45,6 @@ class Inputdoc:
         return myfile.read()
         '''print(myfile.read())  #it works'''
 
-
 #myfos = Inputdoc("9_ФОС_Операционные системы")  # put here your filename
 #myfos.startmacros()
 #myfos.opentxtfile()

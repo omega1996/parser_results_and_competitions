@@ -1,4 +1,12 @@
+py:
+
 http://new.galalaly.me/2011/09/use-python-to-parse-microsoft-word-documents-using-pywin32-library/
 
 https://docs.python.org/3/library/os.path.html
+
+
+
+yargy:
+https://yargy.readthedocs.io/ru/latest/#
+https://yargy.readthedocs.io/ru/latest/reference.html#id1
 
