@@ -4,7 +4,12 @@ import win32com.client
 
 class Inputdoc:
 
-    def __init__(self, filename="9_ФОС_Операционные системы", vision=False):
+    def __init__(self, filename="none", vision=False):
+
+        if filename=="none":
+            print ("print name of the file")
+            filename = input()
+
         self.filename = filename
         self.vision = vision    # Set True if you want to open Word
 
@@ -32,6 +37,29 @@ class Inputdoc:
         else:
             print("no file")
 
+
+
+    def opendocfile(self):
+
+        word = win32com.client.Dispatch("Word.Application")
+        word.Visible = self.vision
+        if os.path.exists(self.filename + ".doc"):
+            word.Documents.Open(os.getcwd() + "\\" + (self.filename + ".doc"))
+        elif os.path.exists(self.filename + ".docx"):
+            word.Documents.Open(os.getcwd() + "\\" + (self.filename + ".docx"))
+        elif os.path.exists(self.filename + ".rtf"):
+            word.Documents.Open(os.getcwd() + "\\" + (self.filename + ".rtf"))
+        else:
+            print("Path is not exist")
+
+    def tablescreate(self):
+
+        self.opendocfile()
+        word = win32com.client.Dispatch("Word.Application")
+        word.Application.Run("Tables")
+        word.Application.Run("SaveAsTXT")
+        word.Application.Quit()
+
     def opentxtfile(self):
         '''
         This function opens file "name".txt for yargy parser
@@ -45,6 +73,7 @@ class Inputdoc:
         return myfile.read()
         '''print(myfile.read())  #it works'''
 
-#myfos = Inputdoc("9_ФОС_Операционные системы")  # put here your filename
+#myfos = Inputdoc()  # put here your filename
+#myfos.opendocfile()
 #myfos.startmacros()
 #myfos.opentxtfile()
