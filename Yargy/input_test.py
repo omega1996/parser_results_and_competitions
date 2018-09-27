@@ -73,7 +73,7 @@ class Inputdoc:
         return myfile.read()
         '''print(myfile.read())  #it works'''
 
-#myfos = Inputdoc()  # put here your filename
-#myfos.opendocfile()
-#myfos.startmacros()
-#myfos.opentxtfile()
+myfos = Inputdoc()  # put here your filename
+myfos.opendocfile()
+myfos.startmacros()
+myfos.opentxtfile()
