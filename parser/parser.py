@@ -74,8 +74,8 @@ def FindFGOS(text):
     return code_FGOS
 
 
-#document = Document('C://Users//Хитрый//Documents//GitHub//corpus//Корпус документов//ЧелГУ ИИТ//2016//РПД ПИ 2014 год набора//РПД Государственная итоговая аттестация.docx')
-document = Document('C://Users//Хитрый//Documents//GitHub//parser_results_and_competitions//parser//25_РПД Разработка приложений для работы с БД.docx')
+document = Document('C://Users//Хитрый//Documents//GitHub//corpus//Корпус документов//ЧелГУ ИИТ//2016//РПД ПИ 2014 год набора//РПД Государственная итоговая аттестация.docx')
+#document = Document('C://Users//Хитрый//Documents//GitHub//parser_results_and_competitions//parser//25_РПД Разработка приложений для работы с БД.docx')
 #document = Document('C://Users//Хитрый//Documents//GitHub//parser_results_and_competitions//parser//ОП ВО 09.03.01, 2016, (4.0), Информатика и вычислительная техника (19610).docx')
 
 
