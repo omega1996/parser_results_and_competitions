@@ -1,10 +1,6 @@
 from docx import Document
-from docx.shared import Inches
-import yargy
 import os
 from yargy.tokenizer import Tokenizer, TokenRule
-from yargy.pipelines import morph_pipeline
-import input_test as inp
 
 class CompetitionResult():
 
@@ -23,7 +19,7 @@ class YargyParser:
             print("print the name of the file (yargy)")
             filename = input()
         self.filename = filename
-        self.document = Document(os.getcwd() + "\\" + (self.filename + ".docx"))
+        self.document = Document(os.getcwd() + "\\docs\\" + (self.filename + ".docx"))
 
 
     def text_prepare(self):
@@ -67,10 +63,7 @@ class YargyParser:
                 if len_list != checklist:
                     print(i.text)
                     checklist = len_list
-                '''
-                надо сохранять строку в которой найдет код
-                сохранять ее как компетенции
-                '''
+
             print(len(FGOS_list))
 
 
