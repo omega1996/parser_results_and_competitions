@@ -20,12 +20,43 @@ class LecturePaser:
 
     def sections(self):
         pars = Parser(self.section_rule)
-        mmm = pars.findall("Содержание дисциплины, структурированное\ по тема, тема, темам, темы (разделам) с указанием отведенного на них количества академических часов и видов учебных занятий Таблица 2.1 – Разделы дисциплины и трудоемкость по видам учебных занятий ( в академических часах)  для очной формы обучения")
-        index = 0
-        for i in mmm:
-            print(i.tokens[0].value)
-            index +=1
+        '''
+        идея в том, чтобы искать по всем ячейкам таблицы и 
+        находить хотя бы 3 слова из словаря считать что подходит
+        
+        '''
+        docum = Document(os.getcwd() + "/Git/parser_results_and_competitions/Yargy/docs/" + "РПД Схемотехника ЭВМ и аппаратура персональных компьютеров (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx")
+        found = False
+        for table in docum.tables:
+            for column in table.columns:
+                for cell in column.cells:
+                    particles = pars.findall(cell.text)
+                    index = 0
+                    for each in particles:
+                        index+=1
+                    if index > 2:
+                        self.themes (column)
+                        found = True
+                        break 
+                if found: break
+            if found: break
         print(index)
+
+
+
+    def themes(self,column):
+        key = column.cells[0].text
+        themes_dict={key:[]}
+        for cell in column.cells[1::]:
+            #print (cell.text)
+            if (cell.text == "Контроль") or (cell.text == "Всего") :
+                break
+            if (cell.text == key):
+                continue
+            themes_dict[key].append(cell.text)
+            
+        print(themes_dict)
+
 
 
 
@@ -44,12 +75,7 @@ class DocumentPrepare:
             print("print the name of the file (yargy)")
             docname = input()
         #  path = "docs\\" + name  //windows
-
         path = os.getcwd() + "/Git/parser_results_and_competitions/Yargy/docs/" +docname #  Linux
-
-
-
-
         docx = Document(path)
         return docx
 
