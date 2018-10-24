@@ -93,6 +93,8 @@ class LecturePaser:
         lect_dict={key:[]}
         flag = False
         separator =False
+        save_pre=''
+        save_lect=''
         for cell in column.cells:
             lect = cell.text
             
@@ -103,10 +105,16 @@ class LecturePaser:
                         break
 
                     if flag:
+                    
                         precision = cell.text
-                        lect_dict[key].append(lecture+'=')
-                        if re.sub(r'[^\w\s]+|',r'',precision).strip() != '':
+                        if save_lect != lecture:
+                            lect_dict[key].append(lecture+'=')
+                            save_lect = lecture
+
+                        if re.sub(r'[^\w\s]+|[\d]+',r'',precision).strip() != '' and save_pre!=precision:
                             lect_dict[key].append(precision+'|')
+                            save_pre = precision
+                            
                         flag = False
 
                     if (cell.text == lect) and lect != '':
@@ -117,7 +125,7 @@ class LecturePaser:
 
         '''
         #legacy:
-        
+
     def themes(self,column):
         key = column.cells[0].text
         themes_dict={key:[]}
@@ -146,8 +154,11 @@ class DocumentPrepare:
         if (docname is 'None') and (self.namedoc is 'None'):
             print("print the name of the file (yargy)")
             docname = input()
-        #  path = "docs\\" + name  //windows
-        path = os.getcwd() + "/Git/parser_results_and_competitions/Yargy/docs/" +docname #  Linux
+        
+        if os.name == 'nt':
+            path = "docs\\" + name 
+        if os.name == 'posix':
+            path = os.getcwd() + "/Git/parser_results_and_competitions/Yargy/docs/" +docname #  Linux
         docx = Document(path)
         return docx
 
