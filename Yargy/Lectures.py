@@ -158,7 +158,7 @@ class DocumentPrepare:
         if os.name == 'nt':
             path = "docs\\" + name 
         if os.name == 'posix':
-            path = os.getcwd() + "/Git/parser_results_and_competitions/Yargy/docs/" +docname #  Linux
+            path = os.getcwd() + "/Git/parser_results_and_competitions/co-co-corpus" +docname #  Linux
         docx = Document(path)
         return docx
 
@@ -166,8 +166,9 @@ class DocumentPrepare:
 #mydoc.open_doc()
 
 
-mytext = LecturePaser('25_РПД Разработка приложений для работы с БД.docx')
+#mytext = LecturePaser('25_РПД Разработка приложений для работы с БД.docx')
 #mytext = LecturePaser('31. Сетевые технологии.docx')#не работает
 #mytext = LecturePaser('РПД Схемотехника ЭВМ и аппаратура персональных компьютеров (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx') #только разделы
 #mytext = LecturePaser('5_РПД Математика.docx')
+mytext = LecturePaser('/ЮГРА/15.Сети ЭВМ и телекоммуникации.docx')
 mytext.sections()
