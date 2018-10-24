@@ -1,14 +1,16 @@
-from docx import Document
+
 import yargy
 import os
 import re
 import copy
+import glob
+from docx import Document
 from yargy import Parser, rule, and_, or_
 from yargy.pipelines import morph_pipeline
 from yargy.predicates import gram, is_capitalized, dictionary, is_upper, length_eq
 
 
-class LecturePaser:
+class LectureParser:
 
     def __init__(self,name=None):
 
@@ -30,7 +32,7 @@ class LecturePaser:
         self.pract_rule = rule(
             morph_pipeline(
                 [
-
+                'наименование'
                 ]
             )
 
@@ -41,7 +43,7 @@ class LecturePaser:
         self.srs_rule = rule(
              morph_pipeline(
                 [
-                    
+                'СРС'
                 ]
             )
 
@@ -51,41 +53,63 @@ class LecturePaser:
         self.docxdoc=DocumentPrepare(name).open_doc()
 
 
-    def sections(self):
+    def sections(self, segment='all'):
+        """
+        attributes:
+        <all>
+        <themes>
+        <lectures>
+        <practices>
+        <srs>
+        """
+
         themes = Parser(self.section_rule)
         lectures = Parser(self.lectures_rule)
-        #practices = Parser(self.pract_rule)
-        #srs = Parser(self.srs_rule)
+        practices = Parser(self.pract_rule)
+        srs = Parser(self.srs_rule)
         found = False
         for table in self.docxdoc.tables:
             for column in table.columns:
                 for cell in column.cells:
-                    cell_search_themes = themes.findall(cell.text) #поиск тем
-                    cell_search_lectures = lectures.findall(cell.text)
                     index = 0
 
-                    for each in cell_search_lectures:
-                        self.lectures(table,column)
-                        found = True
-                        print("ЛЕКЦИИ")
-                        break
+                    if segment=='all' or segment=='themes':
+                        cell_search_themes = themes.findall(cell.text)
+                        for each in cell_search_themes:
+                            index+=1
+                        if index > 2:
+                            self.lectures(table,column)
+                            found = True
+                            print("this is theme")
+                            break 
 
-                    '''
-                    If you don't want to stop after finding
-                    comment found = True 
-                    '''
-                    
-                    for each in cell_search_themes:
-                        index+=1
-                    if index > 2:
-                        self.lectures(table,column)
-                        #found = True
-                        print("this is theme")
-                        break 
+                    if segment=='all' or segment=='lectures':
+                        cell_search_lectures = lectures.findall(cell.text)
+                        for each in cell_search_lectures:
+                            self.lectures(table,column)
+                            found = True
+                            print("ЛЕКЦИИ")
+                            break
+
+                    if segment=='all' or segment=='practices':
+                        cell_search_practices = practices.findall(cell.text)
+                        for each in cell_search_practices:
+                            self.lectures(table,column)
+                            found = True
+                            print("практика")
+                            break
+
+                    if segment=='all' or segment=='srs':
+                        cell_search_srs = srs.findall(cell.text)
+                        for each in cell_search_srs:
+                            self.lectures(table,column)
+                            found = True
+                            print("практика")
+                            break
+                        
                     
                 if found: break
             if found: break
-        #print(index)
 
 
     def lectures(self,table, column):
@@ -121,27 +145,7 @@ class LecturePaser:
                         lecture = cell.text
                         flag = True
 
-        print(lect_dict)
-
-        '''
-        #legacy:
-
-    def themes(self,column):
-        key = column.cells[0].text
-        themes_dict={key:[]}
-        for cell in column.cells[1::]:
-            #print (cell.text)
-            if (cell.text == "Контроль") or (cell.text == "Всего") or (cell.text == "Итого") :
-                break
-            if (cell.text == key):
-                continue
-            themes_dict[key].append(cell.text)
-            
-        print(themes_dict)
-        '''
-
-
-
+        #print(lect_dict)
 
 class DocumentPrepare:
 
@@ -149,26 +153,41 @@ class DocumentPrepare:
         self.namedoc=name
 
     def open_doc(self, docname='None'):
+        
         if self.namedoc is not 'None':
             docname = self.namedoc
         if (docname is 'None') and (self.namedoc is 'None'):
             print("print the name of the file (yargy)")
             docname = input()
-        
-        if os.name == 'nt':
-            path = "docs\\" + name 
-        if os.name == 'posix':
-            path = os.getcwd() + "/Git/parser_results_and_competitions/co-co-corpus" +docname #  Linux
-        docx = Document(path)
+        try: 
+            docx = Document(docname)
+
+        except PackageNotFoundError:
+            if os.name == 'nt':
+                path = "docs\\" + name 
+            if os.name == 'posix':
+                path = os.getcwd() + "/Git/parser_results_and_competitions/co-co-corpus" +docname #  Linux
+            docx = Document(path)
+
         return docx
 
-#mydoc = DocumentPrepare()
-#mydoc.open_doc()
 
+#mytext = LectureParser('/ЧелГУ/5_РПД _Математический анализ, Дифференциальные и разностные уравнения.docx')
+#mytext = LectureParser('/ЮГРА/15.Сети ЭВМ и телекоммуникации.docx')
+#mytext = LectureParser('/ЮУрГУ/РПД Архитектура ЭВМ (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx')
+#mytext = LectureParser('/УрФУ/5_Раб.программа дисциплины Инструм моделирования БП.docx')
+#mytext.sections('lectures')
 
-#mytext = LecturePaser('25_РПД Разработка приложений для работы с БД.docx')
-#mytext = LecturePaser('31. Сетевые технологии.docx')#не работает
-#mytext = LecturePaser('РПД Схемотехника ЭВМ и аппаратура персональных компьютеров (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx') #только разделы
-#mytext = LecturePaser('5_РПД Математика.docx')
-mytext = LecturePaser('/ЮГРА/15.Сети ЭВМ и телекоммуникации.docx')
-mytext.sections()
+def test_search(univer='all',code='all'):
+    unilist = ['ЧелГУ','ЮУрГУ','ЮГРА','УрФУ']
+    if univer != 'all':
+        unilist = [univer]
+
+    for uni in unilist:
+        print(uni)
+        path = os.getcwd() + "/Git/parser_results_and_competitions/co-co-corpus/"+uni+"/"
+        for file in glob.glob(os.path.join(path, '*.docx')):
+            mytext = LectureParser(file)
+            mytext.sections(code)
+
+test_search()
