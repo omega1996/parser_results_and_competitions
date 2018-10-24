@@ -4,6 +4,7 @@ import os
 import re
 import copy
 import glob
+import json
 from docx import Document
 from yargy import Parser, rule, and_, or_
 from yargy.pipelines import morph_pipeline
@@ -18,36 +19,27 @@ class LectureParser:
             dictionary(
                 {
                     "раздел", "тема", "дисциплина", "наименование"
-                }
-                        ))
+                }))
 
         self.lectures_rule = rule(
             morph_pipeline([
                 'тема лекций',
                 'содержание занятий',
                 'содержание лекционного занятия'
-            ])
-        )
+            ]))
 
         self.pract_rule = rule(
             morph_pipeline(
                 [
                 'наименование'
-                ]
-            )
-
-
-        )
+                ]))
 
 
         self.srs_rule = rule(
              morph_pipeline(
                 [
                 'СРС'
-                ]
-            )
-
-        )
+                ]))
 
 
         self.docxdoc=DocumentPrepare(name).open_doc()
@@ -78,32 +70,36 @@ class LectureParser:
                         for each in cell_search_themes:
                             index+=1
                         if index > 2:
-                            self.lectures(table,column)
-                            found = True
+                            return self.lectures(table,column)
+                            if segment !='all':
+                                found = True
                             print("this is theme")
                             break 
 
                     if segment=='all' or segment=='lectures':
                         cell_search_lectures = lectures.findall(cell.text)
                         for each in cell_search_lectures:
-                            self.lectures(table,column)
-                            found = True
+                            return self.lectures(table,column)
+                            if segment !='all':
+                                found = True
                             print("ЛЕКЦИИ")
                             break
 
                     if segment=='all' or segment=='practices':
                         cell_search_practices = practices.findall(cell.text)
                         for each in cell_search_practices:
-                            self.lectures(table,column)
-                            found = True
+                            return self.lectures(table,column)
+                            if segment !='all':
+                                found = True
                             print("практика")
                             break
 
                     if segment=='all' or segment=='srs':
                         cell_search_srs = srs.findall(cell.text)
                         for each in cell_search_srs:
-                            self.lectures(table,column)
-                            found = True
+                            return self.lectures(table,column)
+                            if segment !='all':
+                                found = True
                             print("практика")
                             break
                         
@@ -145,7 +141,7 @@ class LectureParser:
                         lecture = cell.text
                         flag = True
 
-        #print(lect_dict)
+        return(lect_dict)
 
 class DocumentPrepare:
 
@@ -188,6 +184,9 @@ def test_search(univer='all',code='all'):
         path = os.getcwd() + "/Git/parser_results_and_competitions/co-co-corpus/"+uni+"/"
         for file in glob.glob(os.path.join(path, '*.docx')):
             mytext = LectureParser(file)
-            mytext.sections(code)
+            savetojson = mytext.sections(code)
+            with open('data.txt','w') as outfile:
+                json.dump(savetojson, outfile)
+            print('end of file')
 
 test_search()
