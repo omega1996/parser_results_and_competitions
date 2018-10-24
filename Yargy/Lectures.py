@@ -27,14 +27,23 @@ class LecturePaser:
             ])
         )
 
-        self.pract_rule =(
+        self.pract_rule = rule(
+            morph_pipeline(
+                [
+
+                ]
+            )
 
 
         )
 
 
-        self.srs_rule =(
-
+        self.srs_rule = rule(
+             morph_pipeline(
+                [
+                    
+                ]
+            )
 
         )
 
@@ -45,8 +54,8 @@ class LecturePaser:
     def sections(self):
         themes = Parser(self.section_rule)
         lectures = Parser(self.lectures_rule)
-        practices = Parser(self.pract_rule)
-        srs = Parser(self.srs_rule)
+        #practices = Parser(self.pract_rule)
+        #srs = Parser(self.srs_rule)
         found = False
         for table in self.docxdoc.tables:
             for column in table.columns:
@@ -69,8 +78,8 @@ class LecturePaser:
                     for each in cell_search_themes:
                         index+=1
                     if index > 2:
-                        self.themes(column)
-                        found = True
+                        self.lectures(table,column)
+                        #found = True
                         print("this is theme")
                         break 
                     
@@ -79,42 +88,36 @@ class LecturePaser:
         #print(index)
 
 
-    def lectures(self,table,lect_column):
-        key = "Тема лекции"
+    def lectures(self,table, column):
+        key = column.cells[0].text
         lect_dict={key:[]}
         flag = False
         separator =False
-        for cell in lect_column.cells:
+        for cell in column.cells:
             lect = cell.text
             
             for row in table.rows:
                 for cell in row.cells:
+
+                    if (cell.text == "Контроль") or (cell.text == "Всего:") or (cell.text == "Итого") :
+                        break
+
                     if flag:
                         precision = cell.text
                         lect_dict[key].append(lecture+'=')
-                        if re.sub(r'[^\w\s]+|',r'',precision) != '':
+                        if re.sub(r'[^\w\s]+|',r'',precision).strip() != '':
                             lect_dict[key].append(precision+'|')
                         flag = False
-                    '''
-                    if separator:
-                        lect_dict[key].append('%'+cell.text+'%')
-                        separator = False
-
-                    if cell.text == '':
-                        separator = True
-                    '''
 
                     if (cell.text == lect) and lect != '':
                         lecture = cell.text
                         flag = True
-                    
-                    if cell.text == 'Итого':
-                        break
-                        
-                    
+
         print(lect_dict)
 
-
+        '''
+        #legacy:
+        
     def themes(self,column):
         key = column.cells[0].text
         themes_dict={key:[]}
@@ -127,6 +130,7 @@ class LecturePaser:
             themes_dict[key].append(cell.text)
             
         print(themes_dict)
+        '''
 
 
 
@@ -151,8 +155,8 @@ class DocumentPrepare:
 #mydoc.open_doc()
 
 
-#mytext = LecturePaser('25_РПД Разработка приложений для работы с БД.docx')
+mytext = LecturePaser('25_РПД Разработка приложений для работы с БД.docx')
 #mytext = LecturePaser('31. Сетевые технологии.docx')#не работает
 #mytext = LecturePaser('РПД Схемотехника ЭВМ и аппаратура персональных компьютеров (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx') #только разделы
-mytext = LecturePaser('5_РПД Математика.docx')
+#mytext = LecturePaser('5_РПД Математика.docx')
 mytext.sections()
