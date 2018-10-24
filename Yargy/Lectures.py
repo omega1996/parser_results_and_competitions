@@ -1,6 +1,7 @@
 from docx import Document
 import yargy
 import os
+import re
 import copy
 from yargy import Parser, rule, and_, or_
 from yargy.pipelines import morph_pipeline
@@ -10,6 +11,7 @@ from yargy.predicates import gram, is_capitalized, dictionary, is_upper, length_
 class LecturePaser:
 
     def __init__(self,name=None):
+
         self.section_rule = rule(
             dictionary(
                 {
@@ -20,9 +22,22 @@ class LecturePaser:
         self.lectures_rule = rule(
             morph_pipeline([
                 'тема лекций',
-                'содержание занятий'
+                'содержание занятий',
+                'содержание лекционного занятия'
             ])
         )
+
+        self.pract_rule =(
+
+
+        )
+
+
+        self.srs_rule =(
+
+
+        )
+
 
         self.docxdoc=DocumentPrepare(name).open_doc()
 
@@ -30,6 +45,8 @@ class LecturePaser:
     def sections(self):
         themes = Parser(self.section_rule)
         lectures = Parser(self.lectures_rule)
+        practices = Parser(self.pract_rule)
+        srs = Parser(self.srs_rule)
         found = False
         for table in self.docxdoc.tables:
             for column in table.columns:
@@ -44,6 +61,10 @@ class LecturePaser:
                         print("ЛЕКЦИИ")
                         break
 
+                    '''
+                    If you don't want to stop after finding
+                    comment found = True 
+                    '''
                     
                     for each in cell_search_themes:
                         index+=1
@@ -71,7 +92,8 @@ class LecturePaser:
                     if flag:
                         precision = cell.text
                         lect_dict[key].append(lecture+'=')
-                        lect_dict[key].append(precision+'|')
+                        if re.sub(r'[^\w\s]+|',r'',precision) != '':
+                            lect_dict[key].append(precision+'|')
                         flag = False
                     '''
                     if separator:
@@ -98,7 +120,7 @@ class LecturePaser:
         themes_dict={key:[]}
         for cell in column.cells[1::]:
             #print (cell.text)
-            if (cell.text == "Контроль") or (cell.text == "Всего") :
+            if (cell.text == "Контроль") or (cell.text == "Всего") or (cell.text == "Итого") :
                 break
             if (cell.text == key):
                 continue
@@ -130,6 +152,7 @@ class DocumentPrepare:
 
 
 #mytext = LecturePaser('25_РПД Разработка приложений для работы с БД.docx')
-mytext = LecturePaser('31. Сетевые технологии.docx')
-
+#mytext = LecturePaser('31. Сетевые технологии.docx')#не работает
+#mytext = LecturePaser('РПД Схемотехника ЭВМ и аппаратура персональных компьютеров (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx') #только разделы
+mytext = LecturePaser('5_РПД Математика.docx')
 mytext.sections()
