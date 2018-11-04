@@ -106,7 +106,7 @@ class RPD_Parser:
         parser_PRD_practices = Parser(self.prd_practices)
         parser_RPD_srs = Parser(self.rpd_srs)
 
-        self.get_rpd_text("docx/ЧелГУ/5_РПД _Математический анализ, Дифференциальные и разностные уравнения.docx")
+        self.get_rpd_text("docx/ЮУрГУ/РПД Алгоритмы и методы представления графической информации (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx")
 
         self.documentText['цели и задачи'] = self.find_boundries(parser_RPD_task_and_goals)
         self.documentText['результаты обучения'] = self.find_boundries(parser_RPD_education_result)
@@ -126,10 +126,56 @@ class RPD_Parser:
         competence = self.search_place_fgos(fgos_table)
         zyn = self.get_zyn_results(fgos_table, parser_PRD_zyn_result)
 
-        # внедрить разбиение по лекциям, практикам и срс
+        # тащим темы
+        discipline_themes_table = ""
+        for item in self.documentText['структура дисциплины']:
+            if "Таблица: " in item:
+                discipline_themes_table = item
+                break
+
+        result_discipline_themes = self.convert_string_to_table(discipline_themes_table[8:], parser_PRD_themes)
+
+        # тащим конкретные лекции
+        discipline_lectures_table = ""
+        for item in self.documentText['темы лекций']:
+            if "Таблица: " in item:
+                discipline_lectures_table = item
+                break
+        result_discipline_lectures = self.convert_string_to_table(discipline_lectures_table[8:], parser_PRD_lectures)
+
+        # тащим конкретные практики
+        discipline_practises_table = ""
+        for item in self.documentText['темы практик']:
+            if "Таблица: " in item:
+                discipline_practises_table = item
+                break
+
+        result_discipline_practices = self.convert_string_to_table(discipline_practises_table[8:], parser_PRD_practices)
+
+        # тащим темы срс
+        discipline_srs_table = ""
+        for item in self.documentText['темы СРС']:
+            if "Таблица: " in item:
+                discipline_srs_table = item
+                break
+
+        result_discipline_srs = self.convert_string_to_table(discipline_srs_table[8:], parser_RPD_srs)
+        print('tfidf')
 
         for key, val in self.documentText.items():
             print(key, val)
+        print('Компетенции')
+        print(competence)
+        print('Результаты обучения')
+        print(zyn)
+        print('темы')
+        print(result_discipline_themes)
+        print('лекции')
+        print(result_discipline_lectures)
+        print('практики')
+        print(result_discipline_practices)
+        print('СРС')
+        print(result_discipline_srs)
 
     def is_bold_paragraph(self, paragraph):
         for run in paragraph.runs:
@@ -195,8 +241,8 @@ class RPD_Parser:
                 for row in table.rows:
                     for cell in row.cells:
                         my_table += cell.text
-                        my_table += '\t'
-                    my_table += '\n'
+                        my_table += '~'
+                    my_table += '@'
                 text = my_table
                 yield text
 
@@ -205,11 +251,11 @@ class RPD_Parser:
         competence = dict()
         if len(FGOS_list) > 0:
             for i in FGOS_list:
-                competence[i.value] = self.separate(text[i.span[1]:text.find('\n', i.span[1])])
+                competence[i.value] = self.separate(text[i.span[1]:text.find('@', i.span[1])])
         return competence
 
     def separate(self, text):
-        competence = text[1:text.find('\t', 1)]
+        competence = text[1:text.find('~', 1)]
         return competence
 
     def token_fgos(self, text):
@@ -235,17 +281,31 @@ class RPD_Parser:
             dict_result[current.tokens[0].value] = part[current.tokens[0].span[1] + 1:].split(';')
         return dict_result
 
-    def get_rpd_theme(self):
-        pass
-
-    def get_rpd_lectures(self):
-        pass
-
-    def get_prd_practices(self):
-        pass
-
-    def get_srs_themes(self):
-        pass
+    def convert_string_to_table(self, text, pattern):
+        rows = text.split('@')
+        cells = list()
+        for row in rows:
+            cells.append(row.split('~'))
+            # по сути дергаем заголовки таблицы
+        data_column_number = 0
+        for i in range(len(cells[0]) - 1):
+            for match in pattern.findall(cells[0][i]):
+                data_column_number = i
+                break
+        # возвращаем нужную колонку
+        temp = list()
+        for k in range(len(cells) - 1):
+            temp.append(re.sub(r'[^\w\s]+|[\d]+', r'', cells[k][data_column_number]).strip())
+        for t in range(len(temp) - 1):
+            if temp[t] == temp[t + 1]:
+                temp[t] = ""
+        results = list()
+        for i in range(len(temp)):
+            if temp[i] != '' and temp != " " and temp is not None:
+                results.append(temp[i])
+        if len(results) != 0:
+            results.pop(0)
+        return results
 
 
 parser = RPD_Parser()
