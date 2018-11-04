@@ -8,7 +8,7 @@ from docx.oxml import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
 from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
-from yargy.predicates import dictionary
+from yargy.predicates import dictionary, is_title
 from yargy.tokenizer import Tokenizer, TokenRule
 
 
@@ -43,7 +43,7 @@ class RPD_Parser:
         ])
 
         self.rpd_practice_theme = morph_pipeline([
-            'практическое занятие',
+            'практические занятия',
             'семинар',
             'семинарские занятия'
         ])
@@ -52,10 +52,6 @@ class RPD_Parser:
             'самостоятельная работа обучающихся по дисциплине',
             'самостоятельная работа студентов'
         ])
-
-        # rpd_literature = morph_pipeline([
-        #     'литература'
-        # ])
 
         self.rpd_education_zyn = rule(
             dictionary({
@@ -88,8 +84,25 @@ class RPD_Parser:
                 [
                     'СРС'
                 ]))
-
-        self.rpd_optional = rule(
+        self.rpd_name = rule(
+            and_(dictionary({
+                'рабочая'}), is_title()),
+            dictionary({
+                'программа'}),
+            dictionary({
+                'дисциплина'
+            }))
+        self.rpd_lectures_optional = rule(
+            morph_pipeline(
+                [
+                    'Содержание'
+                ]))
+        self.rpd_practices_optional = rule(
+            morph_pipeline(
+                [
+                    'Содержание'
+                ]))
+        self.rpd_srs_optional = rule(
             morph_pipeline(
                 [
                     'Содержание'
@@ -111,83 +124,93 @@ class RPD_Parser:
         parser_PRD_lectures = Parser(self.prd_lectures)
         parser_PRD_practices = Parser(self.prd_practices)
         parser_RPD_srs = Parser(self.rpd_srs)
-        parser_RPD_optional = Parser(self.rpd_optional)
+        parser_RPD_name = Parser(self.rpd_name)
+        parser_RPD_lectures_desc = Parser(self.rpd_lectures_optional)
 
-        self.get_rpd_text("D:\\GitHub\\parser_results_and_competitions1\\Yargy\\docs\\25_РПД Разработка приложений для работы с БД.docx")
+        self.get_rpd_text("docx/ЧелГУ/25_РПД Разработка приложений для работы с БД.docx")
+
+        self.documentText['название дисциплины'] = self.get_rpd_name(parser_RPD_name)
+
+        self.documentText['направление подготовки'] = self.get_direction_of_preparation()
 
         self.documentText['цели и задачи'] = self.find_boundries(parser_RPD_task_and_goals)
-        self.documentText['результаты обучения'] = self.find_boundries(parser_RPD_education_result)
-        self.documentText['связь дисциплины'] = self.find_boundries(parser_RPD_discipline_link)
-        self.documentText['структура дисциплины'] = self.find_boundries(parser_PRD_discipline_structure)
-        self.documentText['темы лекций'] = self.find_boundries(parser_PRD_lecture_theme)
-        self.documentText['темы практик'] = self.find_boundries(parser_RPD_practice_theme)
-        self.documentText['темы СРС'] = self.find_boundries(parser_RPD_selfwork_theme)
-        # documentText['литература'] = find_boundries(docs_headers, fullText, parser_RPD_literature)
 
-        # print компетенции и результаты обучения
+        self.documentText['результаты обучения'] = self.find_boundries(parser_RPD_education_result)
+
         fgos_table = ""
         for item in self.documentText['результаты обучения']:
             if "Таблица: " in item:
                 fgos_table = item
                 break
-        competence = self.search_place_fgos(fgos_table)
-        zyn = self.get_zyn_results(fgos_table, parser_PRD_zyn_result)
+        self.documentText['компетенции'] = self.search_place_fgos(fgos_table)
 
-        # тащим темы
+        self.documentText['ЗУН'] = self.get_zyn_results(fgos_table, parser_PRD_zyn_result)
+
+        self.documentText['связь дисциплины'] = self.find_boundries(parser_RPD_discipline_link)
+
+        self.documentText['структура дисциплины'] = self.find_boundries(parser_PRD_discipline_structure)
+
         discipline_themes_table = ""
         for item in self.documentText['структура дисциплины']:
             if "Таблица: " in item:
                 discipline_themes_table = item
                 break
 
-        result_discipline_themes = self.convert_string_to_table(discipline_themes_table[8:], parser_PRD_themes)
+        self.documentText['темы структуры дисципилны'] = self.convert_string_to_table(discipline_themes_table[8:],
+                                                                                      parser_PRD_themes)
 
-        # тащим конкретные лекции
+        self.documentText['лекции'] = self.find_boundries(parser_PRD_lecture_theme)
+
         discipline_lectures_table = ""
-        for item in self.documentText['темы лекций']:
+        for item in self.documentText['лекции']:
             if "Таблица: " in item:
                 discipline_lectures_table = item
                 break
-        result_discipline_lectures = self.convert_string_to_table(discipline_lectures_table[8:], parser_PRD_lectures, parser_RPD_optional)
+        self.documentText['темы лекций'] = self.convert_string_to_table(discipline_lectures_table[8:],
+                                                                        parser_PRD_lectures)
+        self.documentText['описание лекций'] = self.convert_string_to_table(discipline_lectures_table[8:], parser_RPD_lectures_desc)
 
-        # тащим конкретные практики
+        self.documentText['практики'] = self.find_boundries(parser_RPD_practice_theme)
+
         discipline_practises_table = ""
-        for item in self.documentText['темы практик']:
+        for item in self.documentText['практики']:
             if "Таблица: " in item:
                 discipline_practises_table = item
                 break
 
-        result_discipline_practices = self.convert_string_to_table(discipline_practises_table[8:], parser_PRD_practices)
+        self.documentText['темы практик'] = self.convert_string_to_table(discipline_practises_table[8:],
+                                                                         parser_PRD_practices)
+        self.documentText['описание практик'] = self.convert_string_to_table(discipline_lectures_table[8:], parser_RPD_practices_desc)
 
-        # тащим темы срс
+        self.documentText['СРС'] = self.find_boundries(parser_RPD_selfwork_theme)
+
         discipline_srs_table = ""
-        for item in self.documentText['темы СРС']:
+        for item in self.documentText['СРС']:
             if "Таблица: " in item:
                 discipline_srs_table = item
                 break
 
-        result_discipline_srs = self.convert_string_to_table(discipline_srs_table[8:], parser_RPD_srs)
-        print('tfidf')
+        self.documentText['темы СРС'] = self.convert_string_to_table(discipline_srs_table[8:], parser_RPD_srs)
+        self.documentText['описание СРС'] = self.convert_string_to_table(discipline_srs_table[8:], parser_RPD_srs_desc)
 
         for key, val in self.documentText.items():
             print(key, val)
-        print('Компетенции')
-        print(competence)
-        print('Результаты обучения')
-        print(zyn)
-        print('темы')
-        print(result_discipline_themes)
-        print('лекции')
-        print(result_discipline_lectures)
-        print('практики')
-        print(result_discipline_practices)
-        print('СРС')
-        print(result_discipline_srs)
 
     def is_bold_paragraph(self, paragraph):
         for run in paragraph.runs:
             if run.bold:
                 return True
+
+    def get_direction_of_preparation(self):
+        for i in range(len(self.fullText)):
+            if len(self.token_direction_of_preparation(self.fullText[i])) > 0:
+                return self.fullText[i]
+
+    def get_rpd_name(self, parser):
+        text = ""
+        for i in range(len(self.fullText)):
+            for match in parser.findall(self.fullText[i]):
+                return self.fullText[i + 1]
 
     def iter_rpd_headings(self, paragraphs):
         for paragraph in paragraphs:
@@ -204,7 +227,15 @@ class RPD_Parser:
             if heading.text != '' and heading.text != '\n' and heading.text != ' ' and heading.text.isspace() is False:
                 self.docs_headers.append(heading.text)
         for block in self.iter_block_rpd_items(document):
-            self.fullText.append(block)
+            if block != '' and block != '\n' and block != ' ' and block.isspace() is False:
+                self.fullText.append(block)
+
+    def token_direction_of_preparation(self, text):
+        CODE_RULE = TokenRule('Code', '\d{2}.\d{2}.\d{2}(?!\d)')
+        tokenizer = Tokenizer()
+        tokenizer.remove_types('EOL', 'LATIN', 'RU', 'INT', 'PUNCT', 'OTHER')
+        tokenizer.add_rules(CODE_RULE)
+        return list(tokenizer(text))
 
     def find_boundries(self, parser):
         start_index = 0
@@ -212,9 +243,9 @@ class RPD_Parser:
         text = list()
         start_header = ""
         end_header = ""
-        is_boundaries_found = False
         for i in range(len(self.docs_headers) - 1):
-            compare = re.sub(r'[^\w\s]+|[\d]+', r'', self.docs_headers[i].lower()).strip()
+            # compare = re.sub(r'[^\w\s]+|[\d]+', r'', self.docs_headers[i].lower()).strip()
+            compare = self.docs_headers[i].lower()
             for match in parser.findall(compare):
                 start_header = self.docs_headers[i]
                 end_header = self.docs_headers[i + 1]
@@ -223,13 +254,12 @@ class RPD_Parser:
                         start_index = j + 1
                     if end_header.lower() == self.fullText[j].lower():
                         end_index = j - 1
-                for t in range(start_index, end_index + 1):
-                    text.append(self.fullText[t])
-                is_boundaries_found = True
-                break
-            if is_boundaries_found:
-                break
-        return text
+                if start_index != end_index:
+                    for t in range(start_index, end_index + 1):
+                        text.append(self.fullText[t])
+                else:
+                    text.append(self.fullText[start_index])
+                return text
 
     def iter_block_rpd_items(self, parent):
         if isinstance(parent, Document):
@@ -288,44 +318,28 @@ class RPD_Parser:
             dict_result[current.tokens[0].value] = part[current.tokens[0].span[1] + 1:].split(';')
         return dict_result
 
-    def convert_string_to_table(self, text, pattern, optional = "None"):
-        description = False
+    def convert_string_to_table(self, text, pattern):
         rows = text.split('@')
         cells = list()
         for row in rows:
             cells.append(row.split('~'))
-            # по сути дергаем заголовки таблицы
         data_column_number = 0
         for i in range(len(cells[0]) - 1):
             for match in pattern.findall(cells[0][i]):
                 data_column_number = i
                 break
-            # возвращаем нужную колонку
-
-            if optional != "None": #не знаю как у тебя, а у меня if is not None работать не хочет
-                for match in optional.findall(cells[0][i]):
-                    opt_data_column_number = i
-                    description = True
-                    break
-            #если нужно найти описание(содержание)
-
         temp = list()
         for k in range(len(cells) - 1):
             temp.append(re.sub(r'[^\w\s]+|[\d]+', r'', cells[k][data_column_number]).strip())
-            if description:
-                temp.append(re.sub(r'[^\w\s]+|[\d]+', r'', cells[k][opt_data_column_number]).strip())
         for t in range(len(temp) - 1):
             if temp[t] == temp[t + 1]:
                 temp[t] = ""
-
-        results = []
+        results = list()
         for i in range(len(temp)):
             if temp[i] != '' and temp != " " and temp is not None:
                 results.append(temp[i])
-
         if len(results) != 0:
             results.pop(0)
-
         return results
 
 
