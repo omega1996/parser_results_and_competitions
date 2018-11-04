@@ -89,6 +89,12 @@ class RPD_Parser:
                     'СРС'
                 ]))
 
+        self.rpd_optional = rule(
+            morph_pipeline(
+                [
+                    'Содержание'
+                ]))
+
         self.documentText = dict()
         self.docs_headers = list()
         self.fullText = list()
@@ -105,8 +111,9 @@ class RPD_Parser:
         parser_PRD_lectures = Parser(self.prd_lectures)
         parser_PRD_practices = Parser(self.prd_practices)
         parser_RPD_srs = Parser(self.rpd_srs)
+        parser_RPD_optional = Parser(self.rpd_optional)
 
-        self.get_rpd_text("docx/ЮУрГУ/РПД Алгоритмы и методы представления графической информации (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx")
+        self.get_rpd_text("D:\\GitHub\\parser_results_and_competitions1\\Yargy\\docs\\25_РПД Разработка приложений для работы с БД.docx")
 
         self.documentText['цели и задачи'] = self.find_boundries(parser_RPD_task_and_goals)
         self.documentText['результаты обучения'] = self.find_boundries(parser_RPD_education_result)
@@ -141,7 +148,7 @@ class RPD_Parser:
             if "Таблица: " in item:
                 discipline_lectures_table = item
                 break
-        result_discipline_lectures = self.convert_string_to_table(discipline_lectures_table[8:], parser_PRD_lectures)
+        result_discipline_lectures = self.convert_string_to_table(discipline_lectures_table[8:], parser_PRD_lectures, parser_RPD_optional)
 
         # тащим конкретные практики
         discipline_practises_table = ""
@@ -281,7 +288,8 @@ class RPD_Parser:
             dict_result[current.tokens[0].value] = part[current.tokens[0].span[1] + 1:].split(';')
         return dict_result
 
-    def convert_string_to_table(self, text, pattern):
+    def convert_string_to_table(self, text, pattern, optional = "None"):
+        description = False
         rows = text.split('@')
         cells = list()
         for row in rows:
@@ -292,19 +300,32 @@ class RPD_Parser:
             for match in pattern.findall(cells[0][i]):
                 data_column_number = i
                 break
-        # возвращаем нужную колонку
+            # возвращаем нужную колонку
+
+            if optional != "None": #не знаю как у тебя, а у меня if is not None работать не хочет
+                for match in optional.findall(cells[0][i]):
+                    opt_data_column_number = i
+                    description = True
+                    break
+            #если нужно найти описание(содержание)
+
         temp = list()
         for k in range(len(cells) - 1):
             temp.append(re.sub(r'[^\w\s]+|[\d]+', r'', cells[k][data_column_number]).strip())
+            if description:
+                temp.append(re.sub(r'[^\w\s]+|[\d]+', r'', cells[k][opt_data_column_number]).strip())
         for t in range(len(temp) - 1):
             if temp[t] == temp[t + 1]:
                 temp[t] = ""
-        results = list()
+
+        results = []
         for i in range(len(temp)):
             if temp[i] != '' and temp != " " and temp is not None:
                 results.append(temp[i])
+
         if len(results) != 0:
             results.pop(0)
+
         return results
 
 
