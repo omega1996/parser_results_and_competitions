@@ -156,12 +156,17 @@ class RPD_Parser:
         self.documentText['результаты обучения'] = self.find_boundries(parser_RPD_education_result)
 
         fgos_table = ""
-        for item in self.documentText['результаты обучения']:
-            if "Таблица: " in item:
-                fgos_table = item[8:]
-        if fgos_table == "":
-            fgos_table = self.documentText['результаты обучения']
-            self.documentText['ЗУН'] = self.get_zyn_results(fgos_table, parser_PRD_zyn_result, False)
+        try:
+            for item in self.documentText['результаты обучения']:
+                if "Таблица: " in item:
+                    fgos_table = item[8:]
+
+            if fgos_table == "":
+                fgos_table = self.documentText['результаты обучения']
+                self.documentText['ЗУН'] = self.get_zyn_results(fgos_table, parser_PRD_zyn_result, False)
+        except:
+            print("error")
+            pass
         self.documentText['компетенции'] = self.search_place_fgos("".join(fgos_table))
 
 
@@ -312,10 +317,16 @@ class RPD_Parser:
             elif isinstance(child, CT_Tbl):
                 table = Table(child, parent)
                 my_table = "Таблица: "
+
                 for row in table.rows:
-                    for cell in row.cells:
-                        my_table += cell.text
-                        my_table += '~'
+                    try:
+                        for cell in row.cells:
+                            my_table += cell.text
+                            my_table += '~'
+
+                    except:
+                        print('out of range')
+                        pass
                     my_table += '@'
                 text = my_table
                 yield text
@@ -363,7 +374,7 @@ class RPD_Parser:
             for i in range(len(parts)):
                 for next in parser.findall(parts[i]):
                     k = i+1
-                    while parts[i] != '\n' or parts[i]!= next.tokens[]:
+                    while parts[i] != '\n' or parts[i]!= next.tokens[k]:
                         if next.tokens[0].value not in dict_result:
                             dict_result[next.tokens[0].value] = []
                         dict_result[next.tokens[0].value].append(parts[k])
@@ -398,7 +409,7 @@ class RPD_Parser:
 
 #parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЮУрГУ/РПД Алгоритмы и методы представления графической информации (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx")
 # parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЧелГУ/5_РПД _Математический анализ, Дифференциальные и разностные уравнения.docx")
-parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/УрФУ/5_Раб.программа дисциплины Инструм моделирования БП.docx")
+parser = RPD_Parser(r"D:\GitHub\parser_results_and_competitions1\co-co-corpus\ЮГРА\17.Защита информации.docx")
 #parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЮГРА/14.Тестирование и отладка ПО.docx")
 
 
