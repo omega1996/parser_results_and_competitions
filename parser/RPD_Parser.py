@@ -14,13 +14,15 @@ from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
 from yargy.predicates import dictionary, is_title
 from yargy.tokenizer import Tokenizer, TokenRule
+import csv
 
 
 class RPD_Parser:
 
-    def __init__(self, filename):
+    def __init__(self, filename, university):
 
         self.filename = filename
+        self.university = university
 
         self.rpd_task_and_goals = morph_pipeline([
             'цели и задачи',
@@ -84,7 +86,9 @@ class RPD_Parser:
         self.prd_practices = rule(
             morph_pipeline(
                 [
-                    'наименование'
+                    'наименование',
+                    'лабораторные работы',
+                    'содержание практического занятия'
                 ]))
 
         self.rpd_srs = rule(
@@ -92,7 +96,9 @@ class RPD_Parser:
                 [
                     'СРС',
                     'содержание занятий',
-                    'содержание задания'
+                    'содержание задания',
+                    'тема СРО',
+                    'тема СРС'
                 ]))
         self.rpd_name = rule(
             and_(dictionary({
@@ -114,7 +120,8 @@ class RPD_Parser:
         self.rpd_practices_optional = rule(
             morph_pipeline(
                 [
-                    'содержание'
+                    'содержание',
+                    'cодержание практического занятия'
                 ]))
         self.rpd_srs_optional = rule(
             morph_pipeline(
@@ -146,7 +153,7 @@ class RPD_Parser:
         parser_RPD_srs_desc = Parser(self.rpd_srs_optional)
 
         self.get_rpd_text(filename)
-
+        self.documentText['университет'] = self.university
         self.documentText['название дисциплины'] = self.get_rpd_name(parser_RPD_name)
 
         self.documentText['направление подготовки'] = self.get_direction_of_preparation()
@@ -154,19 +161,17 @@ class RPD_Parser:
         self.documentText['цели и задачи'] = self.find_boundries(parser_RPD_task_and_goals)
 
         self.documentText['результаты обучения'] = self.find_boundries(parser_RPD_education_result)
-
         fgos_table = ""
-        try:
+        flag = True
+        if self.documentText['результаты обучения'] != None:
             for item in self.documentText['результаты обучения']:
                 if "Таблица: " in item:
                     fgos_table = item[8:]
 
             if fgos_table == "":
                 fgos_table = self.documentText['результаты обучения']
-                self.documentText['ЗУН'] = self.get_zyn_results(fgos_table, parser_PRD_zyn_result, False)
-        except:
-            print("error")
-            pass
+                flag = False
+        self.documentText['ЗУН'] = self.get_zyn_results(fgos_table, parser_PRD_zyn_result, flag)
         self.documentText['компетенции'] = self.search_place_fgos("".join(fgos_table))
 
 
@@ -206,7 +211,8 @@ class RPD_Parser:
 
             self.documentText['темы практик'] = self.convert_string_to_table(discipline_practises_table[8:],
                                                                              parser_PRD_practices)
-            #self.documentText['описание практик'] = self.convert_string_to_table(discipline_lectures_table[8:],parser_RPD_practices_desc)
+            self.documentText['описание практик'] = ""
+            #self.convert_string_to_table(discipline_lectures_table[8:],parser_RPD_practices_desc)
 
         self.documentText['СРС'] = self.find_boundries(parser_RPD_selfwork_theme)
         if self.documentText['СРС'] is not None:
@@ -217,7 +223,8 @@ class RPD_Parser:
                     break
 
             self.documentText['темы СРС'] = self.convert_string_to_table(discipline_srs_table[8:], parser_RPD_srs)
-            #self.documentText['описание СРС'] = self.convert_string_to_table(discipline_srs_table[8:], parser_RPD_srs_desc)
+            self.documentText['описание СРС'] = ""
+                #self.convert_string_to_table(discipline_srs_table[8:], parser_RPD_srs_desc)
 
         for key, val in self.documentText.items():
             print(key, val)
@@ -383,11 +390,14 @@ class RPD_Parser:
 
 
     def convert_string_to_table(self, text, pattern):
+
         rows = text.split('@')
         cells = list()
         for row in rows:
             cells.append(row.split('~'))
         data_column_number = 0
+        if 'Выполнение СРС' in cells[0][0]:
+            cells.pop(0)
         for j in range(len(cells[0]) - 1):
             for match in pattern.findall(cells[0][j]):
                 data_column_number = j
@@ -406,23 +416,43 @@ class RPD_Parser:
             results.pop(0)
         return results
 
-
-#parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЮУрГУ/РПД Алгоритмы и методы представления графической информации (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx")
-# parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЧелГУ/5_РПД _Математический анализ, Дифференциальные и разностные уравнения.docx")
-parser = RPD_Parser(r"D:\GitHub\parser_results_and_competitions1\co-co-corpus\ЮГРА\17.Защита информации.docx")
-#parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЮГРА/14.Тестирование и отладка ПО.docx")
-
-
-# def test_search(univer='all'):
-#     unilist = ['ЧелГУ', 'ЮУрГУ', 'ЮГРА', 'УрФУ']
-#     if univer != 'all':
-#         unilist = [univer]
 #
-#     for uni in unilist:
-#         print(uni)
-#         path = os.getcwd() + "/docx/" + uni + "/"
-#         for file in glob.glob(os.path.join(path, '*.docx')):
-#             parser = RPD_Parser(file)
-#             print('end of file')
-#
-# test_search()
+#parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЮУрГУ/РПД Алгоритмы и методы представления графической информации (09.03.01, 2016, (4.0), Информатика и вычислительная техника(19610)).docx", "ЮУрГУ")
+# parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЧелГУ/47_1_РПД_Гибкое управление проектами.docx", 'ЧелГУ')
+#parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/УрФУ/02.04.02 Менеджмент в Информационных технологиях.docx", 'УрФУ')
+# # # #parser = RPD_Parser("/home/autumn_mint/Desktop/project_practice/docx/ЮГРА/14.Тестирование и отладка ПО.docx")
+class dataset_writer:
+    def __init__(self):
+        self.headers = ['университет', 'направление подготовки', 'название дисциплины', 'цели и задачи/аннотации', 'место дисциплины в структуре ОП', 'результаты обучения', 'компетенции', 'разделы дисциплины', 'описание разделов', 'темы лекций', 'описание лекций', 'темы практик', 'описание практик', 'темы СРС', 'описание СРС']
+        self.filename = "dataset.csv"
+        with open(self.filename, "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(self.headers)
+
+    def write_dataset(self, document_text):
+        data = document_text.values()
+        with open(self.filename, "a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(data)
+
+def test_search(univer='all'):
+    datawr = dataset_writer()
+    unilist = ['ЧелГУ', 'ЮУрГУ']
+    if univer != 'all':
+        unilist = [univer]
+
+    for uni in unilist:
+        print(uni)
+        path = os.getcwd() + "/docx/" + uni + "/"
+        for file in glob.glob(os.path.join(path, '*.docx')):
+            print(file + '\n')
+            parser = RPD_Parser(file, uni)
+
+            datawr.write_dataset(parser.documentText)
+            print('end of file')
+
+test_search()
+
+
+
+
