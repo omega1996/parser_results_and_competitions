@@ -377,15 +377,29 @@ class RPD_Parser:
                     dict_result[current.tokens[0].value].append(part[current.tokens[0].span[1] + 1:].split(';'))
             return dict_result
         else:
-            parts = text
-            for i in range(len(parts)):
-                for next in parser.findall(parts[i]):
-                    k = i+1
-                    while parts[i] != '\n' or parts[i]!= next.tokens[k]:
-                        if next.tokens[0].value not in dict_result:
-                            dict_result[next.tokens[0].value] = []
-                        dict_result[next.tokens[0].value].append(parts[k])
-                        k+=1
+            text_in_string = ""
+            for i in text:
+                text_in_string += i
+            if len(list(parser.findall(text_in_string))) > 3:
+                for i in text:
+                    token = parser.find(i)
+                    if token is not None:
+                        token = list(token)[0][0].value
+                        if token not in dict_result:
+                            dict_result[token] = []
+                        dict_result[token].append(i)
+            else:
+                for i in range(len(text)):
+                    if text[i] in ['Знать:','Уметь:','Владеть:']:
+                        k = i + 1
+                        while text[k] not in ['Знать:','Уметь:','Владеть:']:
+                            if text[i] not in dict_result:
+                                dict_result[text[i]] = []
+                            dict_result[text[i]].append(text[k])
+                            if k < len(text) - 1:
+                                k += 1
+                            else:
+                                break
             return dict_result
 
 
@@ -437,13 +451,15 @@ class dataset_writer:
 
 def test_search(univer='all'):
     datawr = dataset_writer()
-    unilist = ['ЧелГУ', 'ЮУрГУ']
+    unilist = ['Урфу']
     if univer != 'all':
+
         unilist = [univer]
 
     for uni in unilist:
         print(uni)
         path = os.getcwd() + "/docx/" + uni + "/"
+        print(path)
         for file in glob.glob(os.path.join(path, '*.docx')):
             print(file + '\n')
             parser = RPD_Parser(file, uni)
