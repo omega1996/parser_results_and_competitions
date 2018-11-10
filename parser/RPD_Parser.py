@@ -101,10 +101,12 @@ class RPD_Parser:
                     'тема СРС'
                 ]))
         self.rpd_name = rule(
-            and_(dictionary({
-                'рабочая'})),
-            dictionary({
-                'программа'}),
+            morph_pipeline(
+                [
+                    'рабочая программа дисциплины',
+                    'дисциплина',
+                    'программа дисциплины'
+                ])
         )
         self.table_rpd_name = rule(
             dictionary({
@@ -259,7 +261,12 @@ class RPD_Parser:
             else:
                 for i in range(len(self.fullText)):
                     for match in parser.findall(self.fullText[i]):
-                        return self.fullText[i + 1]
+                        span = match.tokens[len(match.tokens)-1].span
+                        name = self.fullText[i][span[1]:]
+                        if len(name) < 2:
+                            return self.fullText[i + 1]
+                        else:
+                            return name
 
     def iter_rpd_headings(self, paragraphs):
         for paragraph in paragraphs:
@@ -380,6 +387,9 @@ class RPD_Parser:
             text_in_string = ""
             for i in text:
                 text_in_string += i
+            tokens_value = []
+            for token in parser.findall(text_in_string):
+                tokens_value.append(token.tokens[0].value)
             if len(list(parser.findall(text_in_string))) > 3:
                 for i in text:
                     token = parser.find(i)
@@ -390,9 +400,11 @@ class RPD_Parser:
                         dict_result[token].append(i)
             else:
                 for i in range(len(text)):
-                    if text[i] in ['Знать:','Уметь:','Владеть:']:
+                    token = parser.find(text[i])
+                    if token is not None:
                         k = i + 1
-                        while text[k] not in ['Знать:','Уметь:','Владеть:']:
+                        token = parser.find(text[k])
+                        while token is None:
                             if text[i] not in dict_result:
                                 dict_result[text[i]] = []
                             dict_result[text[i]].append(text[k])
